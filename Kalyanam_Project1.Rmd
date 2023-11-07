@@ -1,0 +1,559 @@
+---
+title: "Kalyanam_Project1"
+author: 'Venkat Jayanth Chowdhury Kalyanam'
+date: '2023-10-11'
+output: html_document
+---
+
+<CENTER>
+<FONT SIZE = 5, color = "Black">
+<P>
+<B>ALY 6000 Introduction to Analytics</B>
+<BR>
+<B>VENKAT JAYANTH CHOWDHURY KALYANAM</B>
+</FONT>
+</CENTER>
+
+
+<FONT SIZE = 4 COLOR = "BLACK">
+<P>
+<B>INTODUCTION : R is a free, open-source programming language and software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing. The R language is widely used among statisticians and data miners for developing statistical software and data analysis.</B>
+<P>
+</FONT>
+
+
+
+```{r setup, include = FALSE, meassage = FALSE, warning = FALSE, echo = FALSE}
+cat("\014") # clears console 
+rm(list = ls()) # clears global environment 
+try(dev.off(dev.list()["RStudioGD"]), silent = TRUE) # clears plots
+try(p_unload(p_loaded(), character.only = TRUE), silent = TRUE) # clears packages 
+options(scipen = 100) # disables scientific notation for entire R session
+
+
+library(pacman)
+p_load(tidyverse)
+p_load(testthat)
+
+first_dataframe <- read.csv("ds_salaries.csv")
+```
+
+
+
+
+<P> 
+<B> Question 1: </B>
+</P> 
+```{r Q1, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+123 * 453 
+5^2 * 40 
+TRUE & FALSE 
+TRUE | FALSE 
+75 %% 10 
+75 / 10
+```
+
+
+<P> 
+<B> Question 2: </B>
+</P> 
+```{r Q2, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+first_vector <- c(17, 12, -33, 5)
+test_that("Testing Problem 2", {
+  expect_equal(first_vector[2], 12)
+  expect_length(first_vector, 4)
+  expect_equal(sum(first_vector), 1)
+})
+```
+
+
+
+<P> 
+<B> Question 3: </B>
+</P> 
+```{r Q3, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+counting_by_fives <- c(5, 10, 15, 20, 25, 30, 35)
+test_that("Testing Problem 3", {
+  expect_equal(counting_by_fives[2], 10)
+  expect_length(counting_by_fives, 7)
+  expect_equal(sum(counting_by_fives), 140 )
+})
+
+```
+
+
+<P> 
+<B> Question 4: </B>
+</P> 
+```{r Q4, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+second_vector <- seq(from = 10, to = 30, by =2)
+test_that("Testing Problem 4", {
+  expect_equal(second_vector[7], 22)
+  expect_length(second_vector, 11)
+  expect_equal(sum(second_vector), 220)
+})
+```
+
+<P>
+<B>Question 5:</B>
+The below statement generates a sequence vector from 5 to 35 by 5.</B> 
+<P>
+
+```{r Q5, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+counting_by_fives_with_seq <- seq(from = 5, to = 35, by =5)
+test_that("Testing Problem 5", {
+  expect_equal(counting_by_fives_with_seq[7], 35)
+  expect_length(counting_by_fives_with_seq, 7)
+  expect_equal(sum(counting_by_fives_with_seq), 140)
+})
+```
+
+<P>
+<B>Question 6:</B>
+<P>
+
+```{r Q6, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+third_vector <- rep(first_vector, times = 10)
+test_that("Testing Problem 6", { 
+  expect_equal(third_vector[20], 5) 
+  expect_length(third_vector, 40) 
+  expect_equal(sum(third_vector), 10) 
+}) 
+``` 
+
+ 
+<P>
+<B>Question 7:</B>
+<P>
+```{r Q7, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+rep_vector <- rep(0, times = 20) 
+``` 
+
+ 
+
+<P>
+<B>Question 8:</B>
+<P>
+```{r Q8, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+fourth_vector <- 10:1 
+test_that("Testing Problem 8", { 
+  expect_equal(fourth_vector[8], 3) 
+  expect_length(fourth_vector, 10) 
+  expect_equal(sum(fourth_vector), 55) 
+})
+``` 
+
+ 
+<P>
+<B>Question 9:</B>
+<P>
+```{r Q9, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+counting_vector <- 5:15
+test_that("Testing Problem 9", {
+  expect_equal(counting_vector[3], 7) 
+  expect_length(counting_vector, 11) 
+  expect_equal(sum(counting_vector), 110) 
+}) 
+``` 
+
+ 
+<P>
+<B>Question 10:</B>
+<P>
+```{r Q10, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+grades <- c(96, 100, 85, 92, 81, 72) 
+test_that("Testing Problem 10", { 
+  expect_that(grades[3], equals(85)) 
+  expect_that(length(grades), equals(6)) 
+  expect_that(grades[6], equals(72)) 
+})
+``` 
+
+ 
+<P>
+<B>Question 11:</B>
+<P>
+```{r Q11, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+bonus_points_added <- grades + 3 
+test_that("Testing Problem 11", { 
+  expect_that(bonus_points_added[3], equals(88)) 
+  expect_that(length(bonus_points_added), equals(6)) 
+  expect_that(bonus_points_added[6], equals(75)) 
+}) 
+``` 
+
+ 
+<P>
+<B>Question 12:</B>
+<P>
+```{r Q12, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+one_to_one_hundred <- seq(from = 1, to = 100) 
+test_that("Testing Problem 12", { 
+  expect_that(one_to_one_hundred[88], equals(88)) 
+  expect_that(length(one_to_one_hundred), equals(100)) 
+  expect_that(one_to_one_hundred[75], equals(75)) 
+  expect_that(one_to_one_hundred[1], equals(1)) 
+}) 
+``` 
+
+ 
+
+
+<P>
+<B>Question 13:</B>
+<P>
+```{r Q13, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+reverse_numbers <- seq(from = 100, to = -100, by = -3 )
+test_that("Testing Problem 13", { 
+  expect_that(reverse_numbers[1], equals(100)) 
+  expect_that(reverse_numbers[20], equals(43)) 
+  expect_that(length(reverse_numbers), equals(67)) 
+  expect_that(reverse_numbers[67], equals(-98)) 
+})
+``` 
+
+<P> 
+<B> Question 14: </B>
+</P> 
+```{r Q14, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+#Adding each element of 'second_vector' with 20.
+second_vector + 20
+#Multiplying each element of 'second_vector' with 20.
+second_vector * 20
+#Checks each element of 'second_vector' whether it is greater than or equal to 20. It returns TRUE for element satisfying the condition otherwise returns FALSE
+second_vector >= 20
+#Checks each elements of 'second_vector' whether it is not equal to 20. It returns TRUE for element satisfying the condition otherwise returns FALSE
+second_vector != 20
+``` 
+
+
+ 
+<P> 
+<B> Question 15: </B>
+</P> 
+```{r Q15, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+total <- sum(one_to_one_hundred) 
+test_that("Testing Problem 15", { 
+  expect_that(total, equals(5050)) 
+}) 
+``` 
+
+ 
+<P> 
+<B> Question 16: </B>
+</P> 
+```{r Q16, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+average_value <- mean(one_to_one_hundred) 
+test_that("Testing Problem 16", { 
+  expect_that(average_value, equals(50.5)) 
+}) 
+``` 
+
+ 
+<P> 
+<B> Question 17: </B>
+</P> 
+```{r Q17, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+median_value <- median(one_to_one_hundred) 
+test_that("Testing Problem 17", { 
+  expect_that(median_value, equals(50.5)) 
+})
+``` 
+
+ 
+<P> 
+<B> Question 18: </B>
+</P> 
+```{r Q18, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+max_value <- max(one_to_one_hundred)
+test_that("Testing Problem 18", { 
+  expect_that(max_value, equals(100)) 
+})
+``` 
+
+ 
+<P> 
+<B> Question 19: </B>
+</P> 
+```{r Q19, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+min_value <- min(one_to_one_hundred) 
+test_that("Testing Problem 19", { 
+  expect_that(min_value, equals(1)) 
+})
+``` 
+
+ 
+<P> 
+<B> Question 20: </B>
+</P> 
+```{r Q20, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+first_value <- second_vector[1] 
+test_that("Testing Problem 20", { 
+  expect_that(first_value, equals(10)) 
+})
+``` 
+
+ 
+<P> 
+<B> Question 21: </B>
+</P> 
+```{r Q21, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+first_three_values <- second_vector[1:3] 
+test_that("Testing Problem 21", { 
+  expect_equal(first_three_values[1], 10) 
+  expect_equal(first_three_values[2], 12) 
+  expect_equal(first_three_values[3], 14) 
+}) 
+``` 
+
+ 
+<P> 
+<B> Question 22: </B>
+</P> 
+```{r Q22, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+vector_from_brackets <- second_vector[c(1,5,10,11)] 
+test_that("Testing Problem 22", { 
+  expect_equal(vector_from_brackets[1], 10) 
+  expect_equal(vector_from_brackets[2], 18) 
+  expect_equal(vector_from_brackets[3], 28) 
+  expect_length(vector_from_brackets, 4) 
+}) 
+``` 
+
+ 
+
+<P>
+<B> Question 23 : </B>
+The below statement creates a new vector 'vector_from_boolean_brackets', by selecting specific elements from the vector first_vector,ie,not selecting first element,selecting 2nd element etc. 
+</P> 
+
+```{r Q23, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+vector_from_boolean_brackets <- first_vector[c(FALSE, TRUE, FALSE, TRUE)] 
+test_that("Testing Problem 23", { 
+  expect_equal(vector_from_boolean_brackets[1], 12) 
+  expect_equal(vector_from_boolean_brackets[2], 5) 
+  expect_length(vector_from_boolean_brackets, 2) 
+}) 
+``` 
+
+ 
+
+<P>
+<B>Question 24 :</B>
+The below statement checks every element of 'second_vector' and if it is >=20,the statement returns true,otherwise false.
+</P> 
+
+```{r Q24, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+second_vector >= 20
+``` 
+
+ 
+
+ 
+
+<P> 
+<B>Question 25 :</B>
+The below statement returns a vector of even numbers from 10 to 30, using the seq() function with a by argument of 2 and gets stored in 'ages_vector'.
+</P> 
+
+```{r Q25, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+ages_vector <- seq(from = 10, to = 30, by = 2)  
+``` 
+
+ 
+
+ 
+
+<P> 
+<B>Question 26 :</B>
+The below command selects all the elements of the vector 'ages_vector' that are greater than or equal to 20.
+</P> 
+
+```{r Q26, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+ages_vector [ages_vector >= 20]
+``` 
+
+ 
+<P> 
+<B> Question 27: </B>
+</P> 
+```{r Q27, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+lowest_grades_removed <- grades[grades>=85] 
+test_that("Testing Problem 27", { 
+  expect_that(lowest_grades_removed[1], equals(96)) 
+  expect_that(lowest_grades_removed[3], equals(85)) 
+  expect_that(length(lowest_grades_removed), equals(4)) 
+} 
+)
+``` 
+
+ 
+
+<P> 
+<B> Question 28: </B>
+</P> 
+```{r Q28, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+middle_grades_removed <- grades[-c(3,4)] 
+test_that("Testing Problem 28", { 
+  expect_that(middle_grades_removed[1], equals(96)) 
+  expect_that(middle_grades_removed[3], equals(81)) 
+  expect_that(length(middle_grades_removed), equals(4)) 
+} 
+) 
+``` 
+
+ 
+<P> 
+<B> Question 29: </B>
+</P> 
+```{r Q29, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+fifth_vector <- second_vector[-c(5,10)] 
+test_that("Testing Problem 29", { 
+  expect_equal(fifth_vector[3], 14) 
+  expect_length(fifth_vector, 9) 
+  expect_equal(sum(fifth_vector), 174) 
+}) 
+``` 
+
+ 
+<P> 
+<B>Question 30 :</B>
+set.seed(5)sets a random seed to 5.That means every time the code is run, we will get the same sequence of random numbers.
+The runif() function generates a random vector of 10 values from a uniform distribution between 0 and 1000. This means that each number in the list is likely to be somewhere between 0 and 1000.
+</P> 
+
+```{r Q30, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+set.seed(5) 
+random_vector <- runif(n=10, min = 0, max = 1000)
+``` 
+
+ 
+
+
+<P> 
+<B> Question 31 to 35: </B>
+</P> 
+```{r Q31, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+sum_vector <- sum(random_vector) 
+cumsum_vector <- cumsum(random_vector) 
+mean_vector <- mean(random_vector) 
+sd_vector <- sd(random_vector) 
+round_vector <- round(random_vector) 
+test_that("Testing Problem 31-35", { 
+  expect_that(floor(sum_vector), equals(5295)) 
+  expect_that(floor(cumsum_vector[10]), equals(5295)) 
+  expect_that(floor(mean_vector), equals(529)) 
+  expect_that(floor(sd_vector), equals(331)) 
+  expect_that(floor(round_vector[3]), equals(917)) 
+  }) 
+``` 
+
+ 
+<P> 
+<B> Question 36: </B>
+</P> 
+```{r Q36, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+sort_vector <- sort(random_vector) 
+``` 
+
+
+<P>
+<B>Question 37:</B> 
+set.seed(5)sets a random seed to 5.That means every time the code is run, we will get the same sequence of random numbers.
+the code is generating a list of 1000 random numbers, where each number is likely to be close to 50, but could be as low as 35 or as high as 65 as the spread is 15.
+</P> 
+
+```{r Q37, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+set.seed(5)  
+random_vector <- rnorm(n=1000, mean = 50, sd = 15) 
+``` 
+
+ 
+
+<P> 
+<B>Question 38 :</B> 
+From the below histogram plot,we can observe the x-axis represents random_vector and y-axis represents frequency of the data. The shape of the output is a bell shaped graph where 50 is the mean as it is the center of the curve.
+</P> 
+
+```{r Q38, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+hist(random_vector) 
+``` 
+
+ 
+<P> 
+<B> Question 41: </B>
+</P> 
+```{r Q41, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE} 
+first_dataframe <- read_csv("ds_salaries.csv") 
+``` 
+
+
+
+<P> 
+<B> Question 42: </B>
+</P> 
+```{r Q42, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+head(first_dataframe)
+#head() function returns the first 6 rows in first_dataframe.
+
+head(first_dataframe, n = 7)
+#as n=7,this time head() function returns first 7 rows in first_dataframe.
+
+names(first_dataframe)
+#names() function returns the list of all columns in first_dataframe.
+
+smaller_dataframe <- select(first_dataframe, job_title, salary_in_usd)
+#a dataframe called smaller_dataframe is created and assigned the select() function which returns the inputted columns 'job_title' and 'salary_in_usd' from first_dataframe.
+
+smaller_dataframe
+#prints smaller_dataframe.
+
+better_smaller_dataframe <- arrange(smaller_dataframe, desc(salary_in_usd))
+better_smaller_dataframe
+#The above command creates a dataframe called 'better_smaller_dataframe' and it gets the value of arrange() function where it takes 'smaller_dataframe' and sort 'salary_in_usd' column in descending order and prints it.
+
+better_smaller_dataframe <- filter(smaller_dataframe, salary_in_usd > 80000)
+better_smaller_dataframe
+#Creates a new data frame, better_smaller_dataframe, containing only the rows from smaller_dataframe where the salary_in_usd is greater than 80000 and prints it.
+
+better_smaller_dataframe <- mutate(smaller_dataframe, salary_in_euros = salary_in_usd * 0.94)
+better_smaller_dataframe
+#Creates a new data frame, better_smaller_dataframe, which is a copy of the smaller_dataframe with an additional column, 'salary_in_euros'. The 'salary_in_euros' column is calculated by converting the 'salary_in_usd' column to euros using the exchange rate 0.94 and prints it.
+
+better_smaller_dataframe <- slice(smaller_dataframe, 1, 1, 2, 3, 4, 10, 1)
+better_smaller_dataframe
+#Filters the smaller_dataframe to create a new data frame, better_smaller_dataframe, that only includes the rows with the following indices: 1, 1, 2, 3, 4, 10, and 1 and prints it.
+
+
+ggplot(better_smaller_dataframe) + geom_col(mapping = aes(x = job_title, y = salary_in_usd), fill = "blue") + xlab("Job Title") + ylab("Salary in US Dollars") + labs(title = "Comparison of Jobs ") + scale_y_continuous(labels = scales::dollar) + theme(axis.text.x = element_text(angle = 50, hjust = 1))
+
+
+#ggplot(better_smaller_dataframe) sets up the plot using the "better_smaller_dataframe" dataset.
+#geom_col(mapping = aes(x = job_title, y = salary_in_usd), fill = "blue") specifies the type of plot, which is a bar chart (geom_col), and maps the "job_title" variable to the x-axis and the "salary_in_usd" variable to the y-axis. The bars in the chart are filled with the color blue.
+#xlab("Job Title") sets the label for the x-axis as "Job Title."
+#ylab("Salary in US Dollars") sets the label for the y-axis as "Salary in US Dollars."
+#labs(title = "Comparison of Jobs ") assigns the title to the plot as "Comparison of Jobs."
+#scale_y_continuous(labels = scales::dollar) formats the y-axis labels to display dollar amounts.
+#theme(axis.text.x = element_text(angle = 50, hjust = 1) adjusts the x-axis labels, rotating them by 50 degrees and aligning them to the right (hjust = 1).#
+```
+
+
+
+<P>
+<B>Conclusion:</B>
+Although i have experience with r programming in my bachelors,this first project in my masters was kind of a brushup and i learnt different types of packages,how to import them,got exposed to various inbuilt functions,assigning variables,creating vectors and much more.
+</P>
+
+
+
+<P>
+<B>References I referred:</B>
+
+The Book of R: A First Course in Programming and Statistics 1st Edition by Tilman M. Davies
+
+Stack Overflow: https://stackoverflow.com/
+
+Tutorials Point: https://www.tutorialspoint.com/r/index.htm
+
+W3 Schools: https://www.w3schools.com/r/r_intro.asp
+</P>

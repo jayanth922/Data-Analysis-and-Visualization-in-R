@@ -1,0 +1,399 @@
+---
+title: "Kalyanam_Project5"
+author: "Venkat Jayanth Chowdhury Kalyanam"
+date: "2023-10-20"
+output: html_document
+---
+
+<CENTER>
+<FONT SIZE = 5, color = "Black">
+<P>
+<B>ALY 6000 Introduction to Analytics</B>
+<BR>
+</FONT>
+<FONT SIZE = 5, color = "Black">
+<B>Venkat Jayanth Chowdhury Kalyanam</B>
+</FONT>
+</CENTER>
+
+
+
+<FONT SIZE = 2 COLOR = "Black">
+<P>
+<B>Introduction :</B>
+In this project,we will be working on probability and counting problems.Also,we will be plotting some bar charts.
+</P>
+</FONT>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r setup2, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+cat("\014") # clears console 
+rm(list = ls()) # clears global environment 
+try(dev.off(dev.list()["RStudioGD"]), silent = TRUE) # clears plots
+try(p_unload(p_loaded(), character.only = TRUE), silent = TRUE) # clears packages 
+options(scipen = 100) # disables scientific notation for entire R session
+
+
+library(pacman)
+library(dplyr)
+library(testthat)
+library(ggplot2)
+library(tibble)
+library(stringr)
+```
+
+
+<P>
+<B> Question 1: </B>
+</P>
+```{r Q1, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+ball_df<-read.csv("ball-dataset.csv")
+head(ball_df)
+```
+
+
+<P> 
+<B> Question 2: </B>
+</P>
+```{r Q2, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+freq_color <- ball_df %>% group_by(color) %>% summarise(count = n())
+freq_color
+```
+
+
+<P> 
+<B> Question 3: </B>
+</P>
+```{r Q3, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+freq_label <- ball_df %>% group_by(label) %>% summarise(count = n()) %>% as_tibble()
+freq_label
+```
+
+
+<P> 
+<B> Question 4: </B>
+</P>
+```{r Q4, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+ggplot(freq_color,aes(x=color,y=count,fill=color))+geom_col()+labs(title="Color Counts of Balls",x="Color",y="Count")+ 
+scale_fill_identity()
+```
+
+
+<P> 
+<B> Question 5: </B>
+</P>
+```{r Q5, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+ggplot(freq_label,aes(x=label,y=count,fill=label))+geom_col()+labs(title="Label Counts of Balls",x="Label",y="Count")
+```
+
+
+<P> 
+<B> Question 6: </B>
+</P>
+```{r Q6, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+n_green_balls <- ball_df %>% filter(color == "green") %>% nrow()
+n_total_balls <- ball_df %>% nrow()
+prob6_result <- n_green_balls / n_total_balls
+
+test_that("Testing Problem 6", {
+  expect_equal(prob6_result, .192,tolerance = 1e-3)
+})
+```
+
+
+
+<P> 
+<B> Question 7: </B>
+</P>
+```{r Q7, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+prob_blue <- ball_df %>% filter(color == "blue") %>% nrow() / nrow(ball_df)
+
+prob_red <- ball_df %>% filter(color == "red") %>% nrow() / nrow(ball_df)
+
+prob7_result <- prob_blue + prob_red
+
+test_that("Testing Problem 7", {
+  expect_equal(prob7_result, .715,tolerance = 1e-3)
+})
+```
+
+
+<P>
+<B> Question 8: </B>
+</P>
+```{r Q8, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+prob_A <- ball_df %>% filter(label == "A") %>% nrow() / nrow(ball_df)
+prob_C <- ball_df %>% filter(label == "C") %>% nrow() / nrow(ball_df)
+prob8_result <- prob_A + prob_C
+
+test_that("Testing Problem 8", {
+  expect_equal(prob8_result, .189,tolerance = 1e-3)
+})
+```
+
+
+<P> 
+<B> Question 9: </B>
+</P>
+```{r Q9, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+n_yellow_balls_with_D <- ball_df %>% filter(color == "yellow" & label == "D") %>% nrow()
+n_total_balls <- ball_df %>% nrow()
+prob9_result <- n_yellow_balls_with_D / n_total_balls
+
+test_that("Testing Problem 9", {
+  expect_equal(prob9_result, .036 ,tolerance = 1e-3)
+})
+```
+
+
+<P> 
+<B> Question 10: </B>
+</P>
+```{r Q10, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+prob_yellow <- ball_df %>% filter(color == "yellow") %>% nrow() / nrow(ball_df)
+prob_D <- ball_df %>% filter(label == "D") %>% nrow() / nrow(ball_df)
+prob10_result <- prob_yellow + prob_D - prob9_result
+
+test_that("Testing Problem 10", {
+  expect_equal(prob10_result, .382,tolerance = 1e-3 )
+})
+```
+
+
+<P> 
+<B> Question 11: </B>
+</P>
+```{r Q11, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+prob_blue <- ball_df %>% filter(color == "blue") %>% nrow() / nrow(ball_df)
+prob_red_given_blue <- ball_df %>% filter(color == "red") %>% nrow() / (nrow(ball_df) - 1)
+prob11_result <- prob_blue * prob_red_given_blue
+
+test_that("Testing Problem 11", {
+  expect_equal(prob11_result, .1253814,tolerance = 1e-4 )
+})
+```
+
+
+
+<P> 
+<B> Question 12: </B>
+</P>
+```{r Q12, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+prob12_result <- (n_green_balls / n_total_balls) * ((n_green_balls - 1) / (n_total_balls - 1)) *
+                ((n_green_balls - 2) / (n_total_balls - 2)) * ((n_green_balls - 3) / (n_total_balls - 3))
+
+test_that("Testing Problem 12", {
+  expect_equal(prob12_result, .001324826 ,tolerance = 1e-5)
+})
+```
+
+
+
+<P> 
+<B> Question 13: </B>
+</P>
+```{r Q13, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+prob_red <- ball_df %>% filter(color == "red") %>% nrow() / nrow(ball_df)
+prob_B_given_red <- ball_df %>% filter(label == "B") %>% nrow() / (nrow(ball_df) - 1)
+prob13_result <- prob_red * prob_B_given_red
+
+test_that("Testing Problem 13", {
+  expect_equal(prob13_result, .1244525, tolerance = 1e-3)
+})
+```
+
+
+<P> 
+<B> Question 14: </B>
+</P>
+```{r Q14, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+factorial <- function(n) {
+  if (n < 0) return(-1)
+  else if(n==0) return(1)
+  else return(prod(1:n))
+}
+
+test_that("Testing Problem 14", {
+  expect_equal(factorial(-5), -1)
+  expect_equal(factorial(3), 6)
+  expect_equal(factorial(0), 1)
+  expect_equal(factorial(6), 720)
+})
+```
+
+
+
+
+<P> 
+From here onwards,all are coin flipping dataframe problems
+<B> Question 18: </B>
+</P>
+```{r Q18, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+coin_outcomes <- c("Head","Tail")
+outcomes <- expand.grid(first=coin_outcomes,second=coin_outcomes,third=coin_outcomes,fourth=coin_outcomes)
+```
+
+
+<P> 
+<B> Question 19: </B>
+</P>
+```{r Q19, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+prob_head<-0.6
+outcomes$Probability <- (ifelse(outcomes$first=="Heads",prob_head,1-prob_head)*ifelse(outcomes$second=="Heads", prob_head,1-prob_head)*ifelse(outcomes$third=="Heads",prob_head,1-prob_head)*ifelse(outcomes$fourth=="Heads",prob_head,1- prob_head))
+print(outcomes$Probability)
+```
+
+
+<P> 
+<B> Question 20: </B>
+</P>
+```{r Q20, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+n_flips <- 4
+num_head_prob <- tibble(Num_Heads = 0:n_flips, Probability = 0)
+for (k in 0:n_flips) {
+  probability <- choose(n_flips, k) * prob_head^k * (1 - prob_head)^(n_flips - k)
+  num_head_prob$Probability[num_head_prob$Num_Heads == k] <- probability
+}
+num_head_prob
+```
+
+
+
+
+<P> 
+<B> Question 21: </B>
+</P>
+```{r Q21, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+k_heads<-3
+prob21_result <- choose(n_flips, k_heads) * (prob_head^k_heads) * ((1 - prob_head) ^ (n_flips - k_heads))
+
+test_that("Testing Problem 21", {
+  expect_equal(prob21_result,0.3456,tolerance = 1e-3 )
+})
+```
+
+
+
+<P> 
+<B> Question 22: </B>
+</P>
+```{r Q22, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+p_head <- 0.6
+n_flips <- 4
+k1 <- 2
+probability_two_heads <- choose(n_flips, k1) * p_head^k1 * (1 - p_head)^(n_flips - k1)
+k2 <- 4
+probability_four_heads <- choose(n_flips, k2) * p_head^k2 * (1 - p_head)^(n_flips - k2)
+prob22_result <- probability_two_heads + probability_four_heads
+
+test_that("Testing Problem 22", {
+  expect_equal(prob22_result,0.4752 ,tolerance = 1e-3)
+})
+```
+
+
+<P> 
+<B> Question 23: </B>
+</P>
+```{r Q23, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+p_head <- 0.6
+n_flips <- 4
+total_probability <- 0
+for (k in 0:3) {
+  probability_k <- choose(n_flips, k) * p_head^k * (1 - p_head)^(n_flips - k)
+  total_probability <- total_probability + probability_k
+}
+prob23_result <- total_probability
+
+test_that("Testing Problem 23", {
+  expect_equal(prob23_result, 0.8704,tolerance = 1e-3)
+})
+```
+
+
+<P> 
+<B> Question 24: </B>
+</P>
+```{r Q24, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+outcome_probabilities <- data.frame(
+  Outcome = c("0 Heads", "1 Head", "2 Heads", "3 Heads", "4 Heads"),
+  Probability = c(1 - prob23_result, probability_two_heads, probability_two_heads, probability_two_heads, probability_four_heads)
+)
+
+
+ggplot(outcome_probabilities, aes(x = Outcome, y = Probability)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(x = "Number of Heads", y = "Probability") +
+  ggtitle("Probability Distribution of Heads for 4 flips") +
+  theme_minimal()
+```
+
+
+
+<P> 
+From here onwards,all are soccer games problems
+<B> Question 25: </B>
+</P>
+```{r Q25, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+p_home_win <- 0.75
+p_away_win <- 0.50
+prob25_result <- (p_home_win^5)*(p_away_win^5)
+
+test_that("Optional - Testing Problem 25", {
+  expect_equal(prob25_result, .007415771,tolerance = 1e-4)
+})
+```
+
+
+<P> 
+<B> Question 26: </B>
+</P>
+```{r Q26, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+prob_losing_all <- (1-p_home_win)^5 *(1 - p_away_win)^5
+prob26_result <- 1-prob_losing_all
+
+test_that("Optional Testing Problem 26", {
+  expect_equal(prob26_result, .9998474,tolerance = 1e-3)
+})
+```
+
+<P> 
+<B> Question 27: </B>
+</P>
+```{r Q27, include = TRUE, message = TRUE, warning = FALSE, echo = TRUE}
+ways_home <- choose(5, 3)
+ways_away <- choose(5, 2)
+prob27_result <- ways_home*ways_away
+
+test_that("Optional Testing Problem 27", {
+  expect_equal(prob27_result, 100)
+})
+```
+
+
+
+<P>
+<FONT SIZE = 2, COLOR="Black">
+<B>Conclusion: </B>
+</FONT>
+<P>
+To conclude from this project,I have got good understanding of probability and counting problems.Also plotted 2 barcharts.One barchart was label vs count and the other barchart was color vs count.For solving problems,instead of manual calculations,i used different functions in R wherever required.
+</P>
+
+
+
+<P>
+<FONT SIZE = 2, COLOR="Black">
+<B>References i referred: </B>
+</FONT>
+<P>
+Davies, T. M. (2016a). The book of r: A first course in programming and statistics. No Starch Press.
+
+GeeksforGeeks. (2021, December 15). What are counting principle problems?. GeeksforGeeks. https://www.geeksforgeeks.org/what-are-counting-principle-problems/ 
+</P>

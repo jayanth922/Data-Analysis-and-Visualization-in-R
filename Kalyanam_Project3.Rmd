@@ -1,0 +1,358 @@
+---
+title: "Kalyanam_Project3"
+author: "Venkat Jayanth Chowdhury Kalyanam"
+date: "2023-10-25"
+output: html_document
+---
+
+
+<CENTER>
+<FONT SIZE = 5, color = "Black">
+<P>
+<B>ALY 6000 Introduction to Analytics</B>
+<BR>
+</FONT>
+<FONT SIZE = 5, color = "Black">
+<B>Venkat Jayanth Chowdhury Kalyanam</B>
+</FONT>
+</CENTER>
+
+
+
+<FONT SIZE = 2 COLOR = "Black">
+<P>
+<B>Introduction :</B>
+In this Project,we will be working on a book dataset.we will get to know about visualizations like scatter plot,box plot,histogram etc.we also work on measure of central tendencies(mean,median,mode) and dispersion(variance,standard deviation).
+</P>
+</FONT>
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+```{r setup2, include = FALSE, message = FALSE, warning = FALSE, echo = FALSE}
+cat("\014") # clears console 
+rm(list = ls()) # clears global environment 
+try(dev.off(dev.list()["RStudioGD"]), silent = TRUE) # clears plots 
+try(p_unload(p_loaded(), character.only = TRUE), silent = TRUE) # clears packages 
+options(scipen = 100) # disables scientific notion for entire R session
+
+book_df<- read.csv("books.csv")
+
+library(pacman)
+library(testthat)
+library(dplyr)
+
+library(janitor)
+library(lubridate)
+
+library(ggplot2)
+library(ggthemes)
+library(ggeasy)
+```
+
+
+
+<P> 
+<B> Questions 1 to 6: </B>
+</P>
+```{r Data Preprocessing Questions from 1 to 6, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+book_df <- clean_names(book_df)
+book_df <- book_df |> mutate(book_df,first_publish_date=mdy(first_publish_date))
+book_df <- book_df |> mutate(book_df,year=year(first_publish_date))
+book_df <- book_df |> filter(between(book_df$year,1990,2020))
+book_df <- subset(book_df,select=-c(publish_date,edition,characters,price,genres,setting,isbn))
+book_df <- book_df |> filter(pages<1200)
+
+
+
+test_that("Data Cleaning, Variable Called book_df. Checking Number of Rows.", {
+  expect_equal(nrow(book_df),20116)
+})
+test_that("Data Cleaning, Variable Called book_df. Checking year column.", {
+  expect_equal(book_df$year[5], 2003)
+})
+test_that("Data Cleaning, Variable Called book_df. Checking for no large book_df.", {
+  expect_equal(sum(book_df$pages[book_df$pages>=1200]), 0)
+})
+test_that("Data Cleaning, Variable Called book_df. Checking for 1990 first year.", {
+  expect_equal(min(book_df$year), 1990)
+})
+test_that("Data Cleaning, Variable Called book_df. Checking for 2020 last year.", {
+  expect_equal(max(book_df$year), 2020)
+})
+test_that("Data Cleaning, Variable Called book_df. Checking Number of Columns", {
+  expect_equal(ncol(book_df), 17)
+})
+```
+
+
+<P>
+<B>From here,all are data analysis questions(part-2)</B>
+</P>
+
+
+<P> 
+<B> Question 1: </B>
+</P>
+```{r Q1, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+glimpse(book_df)
+```
+
+
+
+<P> 
+<B> Question 2: </B>
+</P>
+```{r Q2, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+summary(book_df)
+```
+
+
+<P> 
+<B> Question 3: </B>
+</P>
+```{r Q3, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+ggplot(data=book_df,aes(x=rating))+geom_histogram(binwidth=0.25,fill="red")+labs(title="Histogram of Book Ratings",x="Rating",y ="Number of Books") +theme_bw()
+```
+
+
+<P> 
+<B> Question 4: </B>
+</P>
+```{r Q4, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+ggplot(data=book_df,aes(x=pages))+geom_boxplot(fill="magenta")+labs(title="Box Plot of Page Counts",x="Pages",y="")+theme_economist()
+``` 
+
+
+<P> 
+<B> Question 5: </B>
+</P>
+```{r Q5, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+publisher_summary <- book_df %>%
+  group_by(publisher) %>%
+  summarise(n_books = n())
+
+
+publisher_summary <- publisher_summary %>%
+  filter(!is.na(publisher))
+
+
+publisher_summary <- publisher_summary %>%
+  filter(n_books >= 250)
+
+
+publisher_summary <- publisher_summary %>%
+  arrange(desc(n_books))
+
+
+publisher_order <- c("Random House", "Harper Collins", "Simon and Schuster", "MacMillan", "Hatchette", "Scholastic Books")
+
+publisher_summary$publisher <- factor(publisher_summary$publisher, levels = publisher_order)
+
+
+publisher_summary <- publisher_summary %>%
+  mutate(publisher = factor(publisher, levels = publisher_summary$publisher))
+
+
+publisher_summary <- publisher_summary %>%
+  mutate(cumulative_count = cumsum(n_books))
+
+
+publisher_summary <- publisher_summary %>%
+  mutate(relative_frequency = n_books / sum(n_books))
+
+
+publisher_summary <- publisher_summary %>%
+  mutate(cumulative_relative_frequency = cumulative_count / sum(n_books))
+
+
+
+
+test_that("Data Analysis, Variable Called book_publishers. Checking Random House n_books", {
+  expect_equal(publisher_summary$n_books[1],2607)
+})
+test_that("Data Analysis, Variable Called book_publishers. Checking Harper Collins cum_count", {
+  expect_equal(publisher_summary$cumulative_count[2], 4119)
+})
+test_that("Data Analysis, Variable Called book_publishers. Checking Simon rel_freq", {
+  expect_equal(publisher_summary$relative_frequency[3], .109, tolerance = 1e-3)
+})
+test_that("Data Analysis, Variable Called book_publishers. Checking MacMillan cum_freq", {
+  expect_equal(publisher_summary$cumulative_relative_frequency[4], .874, tolerance = 1e-3)
+})
+```
+
+
+
+<P> 
+<B> Question 6: </B>
+</P>
+```{r Q6, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+ggplot(publisher_summary,aes(x=reorder(publisher,-n_books),y=n_books))+geom_bar(stat="identity",fill="cyan")+
+labs(title="Pareto and Ogive of Publisher Book Counts (1990 - 2020)",x="Publisher",y="Number of Books")+
+theme_clean()+theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplot(publisher_summary, mapping = aes(x= publisher))+
+  geom_point(aes(y=cumulative_relative_frequency))+
+  geom_path(aes(y=cumulative_relative_frequency), group = 1)
+```
+
+
+<P> 
+<B> Question 7: </B>
+</P>
+```{r Q7, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+ggplot(book_df,aes(x=pages,y=rating,color=year))+geom_point()+labs(title = "Scatter Plot of Pages vs. Rating",x="Pages",y=
+                                                                     "Rating")+theme_tufte()
+```
+
+
+<P> 
+<B> Question 8: </B>
+</P>
+```{r Q8, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+summary_by_year <- book_df %>%group_by(year)%>%summarise(n_books = n(),avg_rating=mean(rating))
+test_that("Data Analysis, Variable Called summary_by_year. Checking 1990 n_books", {
+  expect_equal(summary_by_year$n_books[1], 340)
+})
+test_that("Data Analysis, Variable Called summary_by_year. Checking 1995 avg_rating", {
+  expect_equal(summary_by_year$avg_rating[6], 3.97, tolerance = 1e-2)
+})
+test_that("Data Analysis, Variable Called summary_by_year. Checking 1990 n_books", {
+  expect_equal(summary_by_year$n_books[1], 340)
+})
+```
+
+
+<P> 
+<B> Question 9: </B>
+</P>
+```{r Q9, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+ggplot(summary_by_year,aes(x=year,y=n_books,color=avg_rating))+geom_line()+geom_point()+labs(title = "Total Number of Books Rated Per Year",x="Year",y="Count")+scale_color_viridis_c()+theme_excel_new()
+```
+
+
+<P> 
+<B> Question 10: </B>
+</P>
+```{r Q10, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+custom_mean <- function(values) {
+  sum_of_values <- sum(values)
+  count_of_values <- length(values)
+  return(sum_of_values / count_of_values)
+}
+custom_mean(book_df$pages)
+
+custom_var <- function(values) {
+  avg <- custom_mean(values)
+  squared_deviations <- (values - avg)^2
+  return(sum(squared_deviations) / length(values))
+}
+custom_var(book_df$pages)
+
+custom_sd <- function(values) {
+  variance <- custom_var(values)
+  return(sqrt(variance))
+}
+custom_sd(book_df$pages)
+```
+
+
+
+<P> 
+<B> Question 11: </B>
+</P>
+```{r Q11, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+avg_rating <-  custom_mean(book_df$rating)
+variance <- custom_var(book_df$rating)
+sd <-  custom_sd(book_df$rating)
+tibble(avg_rating = avg_rating,variance = variance,sd = sd)
+```
+
+
+
+<P> 
+<B> Question 12: </B>
+</P>
+```{r Q12, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+sample1 <- sample(book_df$rating, 100, replace = TRUE)
+sample2 <- sample(book_df$rating, 100, replace = TRUE)
+sample3 <- sample(book_df$rating, 100, replace = TRUE)
+
+mean1 <- mean(sample1)
+mean2 <- mean(sample2)
+mean3 <- mean(sample3)
+
+
+var1 <- var(sample1)
+var2 <- var(sample2)
+var3 <- var(sample3)
+
+
+sd1 <- sd(sample1)
+sd2 <- sd(sample2)
+sd3 <- sd(sample3)
+
+population_mean <- mean(book_df$rating)
+
+population_variance <- var(book_df$rating)
+
+population_sd <- sd(book_df$rating)
+
+print(data.frame(Statistic = c("Population Mean", "Population Variance", "Population Standard Deviation"), Value = c(population_mean, population_variance, population_sd)))
+```
+
+
+<P> 
+<B> Question 13: </B>
+</P>
+```{r Q13, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE}
+ggplot(book_df,aes(x=pages))+geom_histogram(aes(color="black"))+labs(title="Books by Count of Pages",x="Pages",y="Number of Books")
+```
+
+
+<P>
+<FONT SIZE = 2, COLOR="black">
+<B>Q14:</B>
+</FONT>
+<P>
+In this project,for the first 6 questions,i did different types of data preprocessing techniques like filtering in between values,removing null values,removing unnecessary columns,listing column names etc.
+
+for the remaining questions,i created Pareto chart,scatter plot,line plot,histograms and boxplots for different attributes.Also,worked on grouping data into a single dataframe and performing operations on them like adding/removing columns,checking for null values etc.
+
+For the last few questions,i also worked on different measures of central tendencies and dispersion with the help of statistical functions like (mean,median,mode) and (variance,standard deviation).
+</P>
+
+
+
+
+<P>
+<FONT SIZE = 2, COLOR="black">
+<B>Conclusion</B>
+</FONT>
+<P>
+To conclude from this project,i got better understanding of data wrangling(pre processing) and have learned lot about plotting different types of plots for different attributes.Not to forget,got to know about why to apply measures of central tendencies and dispersion for better analysis.
+</P>
+
+
+
+<P>
+<FONT SIZE = 2, COLOR="black">
+<B>References i referred: </B>
+</FONT>
+<P>
+Stack Overflow: https://stackoverflow.com/
+
+Davies, T. M. (2016). The book of r a first course in programming and Statistics. No Starch Press. 
+
+Canvas Course Material
+
+GeeksforGeeks Website: https://www.geeksforgeeks.org/data-wrangling-in-r-programming-working-with-tibbles/
+
+Teacher Assistant Kuan-Yu Chi also helped in doubt clarification.
+</P>

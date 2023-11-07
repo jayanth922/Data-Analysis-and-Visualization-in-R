@@ -1,0 +1,492 @@
+---
+title: "Kalyanam_Project2"
+author: "Venkat Jayanth Chowdhury Kalyanam"
+date: "2023-10-13"
+output: html_document
+---
+
+
+<CENTER>
+<FONT SIZE = 6, COLOR = "Black">
+<P>
+<B>ALY6000 INTRODUCTION TO ANALYTICS</B>
+<BR>
+<B>VENKAT JAYANTH CHOWDHURY KALYANAM</B>
+</FONT>
+</CENTER>
+
+
+<FONT SIZE = 2 COLOR = "BLACK">
+<P>
+<B>Introduction :</B>
+In this project,we will be working on 2 datasets '2015.csv' and 'baseball.csv'.Using Exploratory Data Analysis,for the first dataset,we will be finding the happiness and freedom index of different countries and the second dataset acts as platform for data analysis.we will preprocess and wrangle the both datasets like  sorting,row selection,filtering and summarizing data.
+<P>
+</FONT>
+
+
+
+```{r setup, include = FALSE, meassage = FALSE, warning = FALSE, echo = FALSE}
+cat("\014") # clears console
+rm(list = ls()) # clears global environment
+try(dev.off(dev.list()["RStudioGD"]), silent = TRUE) # clears plots
+try(p_unload(p_loaded(), character.only = TRUE), silent = TRUE) #clears packages
+options(scipen = 100) # disables scientific notion for entire R session
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(pacman)
+p_load(tidyverse)
+p_load(testthat)
+```
+
+
+
+
+
+<P> 
+<B> Question 1: </B>
+</P> 
+```{r Q1, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+data_2015 <- read.csv('C:/Users/jayan/OneDrive/Documents/R Assignments/Kalyanam_Project2/2015.csv')
+head(data_2015)
+```
+
+
+
+<P> 
+<B> Question 2: </B>
+</P> 
+```{r Q2, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+names(data_2015)
+```
+
+
+
+<P> 
+<B> Question 3: </B>
+</P> 
+```{r Q3, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+View(data_2015)
+```
+
+
+
+<P> 
+<B> Question 4: </B>
+</P> 
+```{r Q4, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+glimpse(data_2015)
+```
+
+
+
+<P> 
+<B> Question 5: </B>
+</P> 
+```{r Q5, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+p_load(janitor)
+data_2015 <- clean_names(data_2015)
+head(data_2015)
+```
+
+
+
+<P> 
+<B> Question 6: </B>
+</P> 
+```{r Q6, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+happy_df <- data_2015 %>% select(country,region,happiness_score,freedom)
+head(happy_df)
+test_that("Testing Problem 6", {
+  expect_equal(happy_df$region[3], "Western Europe")
+  expect_equal(happy_df$country[7], "Netherlands")
+})
+```
+
+
+
+<P> 
+<B> Question 7: </B>
+</P> 
+```{r Q7, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+top_ten_df <- happy_df %>% slice(1:10)
+test_that("Testing Problem 7", {
+  expect_equal(top_ten_df$region[5], "North America")
+  expect_equal(top_ten_df$country[5], "Canada")
+  expect_equal(nrow(top_ten_df), 10)
+})
+```
+
+
+
+<P> 
+<B> Question 8: </B>
+</P> 
+```{r Q8, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+no_freedom_df <- filter(happy_df, freedom<0.20, .by = NULL, .preserve = FALSE)
+test_that("Testing Problem 8", {
+  expect_equal(no_freedom_df$region[4], "Western Europe")
+  expect_equal(no_freedom_df$country[6], "Sudan")
+})
+```
+
+
+
+<P> 
+<B> Question 9: </B>
+</P> 
+```{r Q9, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+best_freedom_df <- happy_df %>% arrange(desc(freedom))
+test_that("Testing Problem 9", {
+  expect_equal(best_freedom_df$region[5], "Central and Eastern Europe")
+  expect_equal(best_freedom_df$country[6], "Australia")
+})
+```
+
+
+
+<P> 
+<B> Question 10: </B>
+</P> 
+```{r Q10, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+data_2015 <- data_2015 %>% mutate(gff_stat = family + freedom + generosity)
+test_that("Testing Problem 10", {
+  expect_equal(data_2015$gff_stat[6], 2.19346, tolerance = 1e-4)
+  expect_equal(data_2015$country[6], "Finland")
+})
+```
+
+
+
+<P> 
+<B> Question 11: </B>
+</P> 
+```{r Q11, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+happy_summary <- happy_df %>% summarize(mean_happiness = mean(happiness_score),max_happiness = max(happiness_score),mean_freedom = mean(freedom),max_freedom = max(freedom))
+test_that("Testing Problem 11", {
+  expect_equal(happy_summary$mean_happiness[1], 5.375734	, tolerance = 1e-4)
+  expect_equal(happy_summary$max_happiness[1], 7.587)
+})
+```
+
+
+
+<P> 
+<B> Question 12: </B>
+</P> 
+```{r Q12, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+regional_stats_df <- happy_df %>% group_by(region) %>% summarize(country_count = n(),mean_happiness = mean(happiness_score),mean_freedom = mean(freedom))
+test_that("Testing Problem 12", {
+  expect_equal(regional_stats_df$region[6], "North America")
+  expect_equal(regional_stats_df$country_count[5], 20)
+  expect_equal(regional_stats_df$mean_happiness[10], 6.69, tolerance = 1e-2)
+  expect_equal(regional_stats_df$mean_freedom[5], .362, tolerance = 1e-3)
+
+})
+```
+
+
+
+<P> 
+<B> Question 13: </B>
+</P> 
+```{r Q13, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+
+sub_saharan_only <- data_2015[data_2015$region == "Sub-Saharan Africa", ]
+sub_saharan_happinessrank <- arrange(sub_saharan_only, desc(happiness_score))
+sub_saharan_happinessrank_top10<- head(sub_saharan_happinessrank, n = 10)
+africa_gdp_df <- summarise(sub_saharan_happinessrank_top10,gdp=mean(economy_gdp_per_capita))
+
+western_europe_only <- data_2015 [data_2015$region == "Western Europe", ]
+western_europe_happinessbottom10 <- arrange(western_europe_only, happiness_score) |>
+
+head(western_europe_only, n = 10)
+westerneurope_gdp_df <- summarise(western_europe_happinessbottom10,gdp=mean(economy_gdp_per_capita))
+
+gdp_df <- data.frame(westerneurope_gdp_df, africa_gdp_df)
+gdp_df <- gdp_df |>
+
+rename("europe_gdp" = "gdp","africa_gdp" = "gdp.1")
+
+gdp_df
+
+test_that("Testing Problem 13", {
+
+expect_equal(gdp_df[1,][[1]], 1.23, tolerance = 0.01)
+expect_equal(gdp_df[1,][[2]], 0.523, tolerance = 0.01)
+
+})
+```
+
+
+
+<P> 
+<B> Question 14: </B>
+</P> 
+```{r Q14, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+plot(regional_stats_df$mean_happiness, regional_stats_df$mean_freedom,
+     col = factor(regional_stats_df$region),
+     xlab = "Mean Happiness", ylab = "Mean Freedom", pch = 19,
+     main = "Scatterplot of Mean Happiness vs. Mean Freedom")
+
+legend("bottomright",
+       legend = levels(factor(regional_stats_df$region)),
+       pch = 19,
+       col = factor(levels(factor(regional_stats_df$region))))
+
+min_happiness <- min(regional_stats_df$mean_happiness)
+max_happiness <- max(regional_stats_df$mean_happiness)
+min_freedom <- min(regional_stats_df$mean_freedom)
+max_freedom <- max(regional_stats_df$mean_freedom)
+
+segments(min_happiness, min_freedom, max_happiness, max_freedom,col="violet")
+```
+
+
+<P>Second Part of Assignment(Baseball data)<P>
+
+<P> 
+<B> Question 15: </B>
+</P> 
+```{r Q15, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+baseball <- read_csv("baseball.csv",show_col_types = FALSE)
+```
+
+
+
+<P> 
+<B> Question 16: </B>
+</P> 
+```{r Q16, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+head(baseball)
+summary(baseball)
+```
+
+
+
+<P> 
+<B> Question 17: </B>
+</P> 
+```{r Q17, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+class(baseball)
+```
+
+
+
+<P> 
+<B> Question 18: </B>
+</P> 
+```{r Q18, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+age_stats_df <- baseball %>% group_by(Age) %>%
+  summarise(Count = n(),HR = mean(HR, na.rm = TRUE),H = mean(H, na.rm = TRUE),R = mean(R, na.rm = TRUE))
+test_that("Testing Problem 18", {
+  expect_equal(age_stats_df$HR[6], 4.5	, tolerance = 1e-2)
+  expect_equal(age_stats_df$R[10], 26.4	, tolerance = 1e-2)
+  expect_equal(age_stats_df$H[10], 52.6	, tolerance = 1e-2)
+})
+```
+
+
+
+<P> 
+<B> Question 19: </B>
+</P> 
+```{r Q19, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+baseball <- baseball %>% filter(AB > 0)
+baseball
+```
+
+
+
+<P> 
+<B> Question 20: </B>
+</P> 
+```{r Q20, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+baseball <- baseball %>% mutate(BA = H / AB)
+baseball
+```
+
+
+
+<P> 
+<B> Question 21: </B>
+</P> 
+```{r Q21, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+baseball <- baseball %>% mutate(BA = round(BA, 3))
+test_that("Testing Problem 21", {
+  expect_equal(baseball$BA[8], .219)
+  expect_equal(max(baseball$BA), 1)
+  expect_equal(min(baseball$BA), 0)
+})
+```
+
+
+
+<P> 
+<B> Question 22: </B>
+</P> 
+```{r Q22, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+baseball <- baseball %>% mutate(OBP = (H + BB) / (AB + BB))
+baseball
+```
+
+
+
+<P> 
+<B> Question 23: </B>
+</P> 
+```{r Q23, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+baseball <- baseball %>% mutate(OBP = round(OBP, 3))
+test_that("Testing Problem 23", {
+  expect_equal(baseball$OBP[25], .363)
+  expect_equal(max(baseball$OBP), 1)
+  expect_equal(min(baseball$OBP), 0)
+})
+```
+
+
+
+<P> 
+<B> Question 24: </B>
+</P> 
+```{r Q24, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+strikeout_artist <- baseball %>% arrange(desc(SO)) %>% head(10)
+test_that("Testing Problem 24", {
+  expect_equal(strikeout_artist$Last[1], "Incaviglia")
+  expect_equal(strikeout_artist$Last[10], "Strawberry")
+})
+```
+
+
+
+<P> 
+<B> Question 25: </B>
+</P> 
+```{r Q25, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+library(ggplot2)
+# Creating scatterplot
+ggplot(baseball, aes(x = HR, y = RBI)) +geom_point() +labs(x = "Number of Home Runs (HRs)", y = "Number of RBIs") +ggtitle("Scatterplot of HRs vs. RBIs")
+```
+
+
+
+<P> 
+<B> Question 26: </B>
+</P> 
+```{r Q26, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+library(dplyr)
+eligible_df <- baseball %>% filter(AB >= 300 | G >= 100)
+eligible_df
+```
+
+
+
+<P> 
+<B> Question 27: </B>
+</P> 
+```{r Q27, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+library(ggplot2)
+# Create a histogram of batting average
+ggplot(eligible_df, aes(x = BA)) +
+  geom_histogram(binwidth = 0.025, fill = "green", color = "blue") +
+  labs(x = "Batting Average", y = "Frequency") +
+  ggtitle("Batting Average Histogram for Eligible Players") +
+  theme_minimal()
+```
+
+
+
+<P> 
+<B> Question 28: </B>
+</P> 
+```{r Q28, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+eligible_df <- eligible_df |> mutate(RankHR = (RankHR = rank(-1*HR, ties.method = "min")))
+eligible_df
+```
+
+
+
+<P> 
+<B> Question 29: </B>
+</P> 
+```{r Q29, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+eligible_df <- eligible_df %>% mutate(RankRBI = rank(-1 * RBI, ties.method = "min"),RankOBP = rank(-1 * OBP, ties.method = "min"))
+eligible_df
+```
+
+
+
+<P> 
+<B> Question 30: </B>
+</P> 
+```{r Q30, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+eligible_df <- eligible_df %>% mutate(TotalRank = RankHR + RankRBI + RankOBP)
+test_that("Testing Problem 30", {
+  expect_equal(nrow(eligible_df), 251)
+  expect_equal(length(eligible_df), 22)
+})
+```
+
+
+
+<P> 
+<B> Question 31: </B>
+</P> 
+```{r Q31, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+mvp_candidates <- eligible_df %>% arrange(TotalRank) %>% head(20)
+test_that("Testing Problem 31", {
+  expect_equal(nrow(mvp_candidates), 20)
+  expect_equal(max(mvp_candidates$TotalRank), 120)
+  expect_equal(min(mvp_candidates$TotalRank), 20)
+  expect_equal(mvp_candidates$TotalRank[5], 75)
+  expect_equal(mvp_candidates$Last[10], "Gibson")
+
+})
+```
+
+
+
+<P> 
+<B> Question 32: </B>
+</P> 
+```{r Q32, include = TRUE, meassage = FALSE, warning = FALSE, echo = TRUE}
+mvp_candidates_abbreviated <- mvp_candidates %>% select(First, Last, RankHR, RankRBI, RankOBP)
+mvp_candidates_abbreviated
+```
+
+
+<P> 
+<B> Question 33: </B>
+<FONT SIZE = 2, COLOR = "BLACK">
+From the Data i have analyzed after Exploratory Data analysis,I would recommend Don Mattingly as the 1986 league Most Valuable PLayer (MVP)(the dataset itself ignores pitchers).I chose him because of his ranks,7th in HRs,8th in OBP and 5th in RBIs and also with a overall rank of 20.
+<P>
+</FONT>
+
+
+
+
+<FONT SIZE = 2, COLOR = "Black">
+<P>
+<B>Conclusion:</B>
+In this project2,I found out happiness and freedom index of different countries and performed data preprocessing and wrangling.I have understood about different packages and many inbuilt functions in r.I got to know about exploratory data analysis and how does it work.It helped me in identifying trends and patterns.
+<P>
+</FONT>
+
+
+
+
+<FONT SIZE = 2, COLOR = "Black">
+<P>
+<B>References i referred:</B>
+
+Stack Overflow: https://stackoverflow.com/
+
+The Book of R: A First Course in Programming and Statistics 1st Edition  by Tilman M. Davies.
+
+Canvas Course Material
+
+GeeksforGeeks Website: https://www.geeksforgeeks.org/what-is-exploratory-data-analysis/#
+
+Our Teacher Assistant Kuan-Yu Chi
+<P>
+</FONT>

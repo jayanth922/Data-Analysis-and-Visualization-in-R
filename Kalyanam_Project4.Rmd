@@ -1,0 +1,131 @@
+---
+title: "Kalyanam_Project4"
+author: "Venkat Jayanth Chowdhury Kalyanam"
+date: "2023-10-31"
+output: html_document
+---
+
+<CENTER>
+<FONT SIZE = 5, color = "Black">
+<P>
+<B>ALY 6000 Introduction to Analytics</B>
+<BR>
+<B>VENKAT JAYANTH CHOWDHURY KALYANAM</B>
+</FONT>
+</CENTER>
+
+
+
+<FONT SIZE = 4 COLOR = "Black">
+<P>
+<B>INTRODUCTION :
+In this Project,We took a dataset called Facebook Stock Data from Kaggle and did analysis.In my part,I have plotted a histogram and barplot of different attributes.I worked on ggplot2 and dplyr packages for this project.Also used measures of central dispersion like mean,median,mode to numerically show the skewness of our plots(left or right skewed).
+</B>
+<P>
+</FONT>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r setup, include = FALSE, meassage = FALSE, warning = FALSE, echo = FALSE}
+cat("\014") # clears console 
+rm(list = ls()) # clears global environment 
+try(dev.off(dev.list()["RStudioGD"]), silent = TRUE) # clears plots
+try(p_unload(p_loaded(), character.only = TRUE), silent = TRUE) # clears packages 
+options(scipen = 100) # disables scientific notation for entire R session
+
+
+library(ggplot2)
+library(dplyr)
+
+data<-read.csv("FB.csv")
+```
+
+
+
+
+<P> 
+<B>#Plotting Histogram for Percentage change in Price Return vs Frequency: </B>
+</P>
+```{r Plot1, include = FALSE, meassage = FALSE, warning = FALSE, echo = FALSE}
+data <- data[data$Date >= as.Date("2012-01-01") & data$Date <= as.Date("2020-12-31"), ]
+
+data$PriceReturn <- c(0, diff(data$Close) / data$Close[-length(data$Close)]) * 100
+data$PriceReturn
+
+mean(data$PriceReturn)
+
+median(data$PriceReturn)
+
+mode_value <- as.numeric(names(sort(table(data$PriceReturn), decreasing = TRUE)[1]))
+mode_value
+
+
+ggplot(data, aes(x = PriceReturn)) +
+  geom_histogram(binwidth = 2, fill = "red", color = "black", alpha = 0.7) +
+  labs(
+    title = "Distribution of Daily Price Returns",
+    x = "Daily Price Return (%)",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+```
+
+
+
+<P> 
+<B>Plotting Barplot for Average Monthly Trade Volume vs Frequency: </B>
+</P>
+```{r Plot2, include = FALSE, meassage = FALSE, warning = FALSE, echo = FALSE}
+data$Date <- as.Date(data$Date)
+data$Year <- as.integer(format(data$Date, "%Y"))
+data$Month <- as.integer(format(data$Date, "%m"))
+
+monthly_avg_volume <- data %>%
+  group_by(Year, Month) %>%
+  summarise(AvgVolume = mean(Volume))
+
+monthly_avg_volume$YearMonth <- paste(monthly_avg_volume$Year, sprintf("%02d", monthly_avg_volume$Month), sep = "-")
+
+ggplot(monthly_avg_volume, aes(x = AvgVolume, y = YearMonth)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Monthly Average Trading Volume Over the Years",
+       x = "Average Trading Volume",
+       y = "Year-Month") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+coord_flip()
+```
+
+
+
+<FONT SIZE = 4 COLOR = "Black">
+<P>
+<B>Conclusion :</B>
+In this Project,We took a dataset called Facebook Stock Data from Kaggle and in my part,I have plotted a histogram showing the percentage change of daily price change of stock price vs Frequency,where we get to know about how much the stockprice is fluctuating to eliminate risks by knowing the number of days it was constant or had fewer changes.
+
+Also,I have Plotted a Barplot of Average Trading Volume in Each Month vs Volume,where we get to know about the trends of this stock.The starting peak indicates a major event,when facebook released its IPO,
+many showed interest in this and traded in large volume.After few months,we got to know about its true work and its progress and some selled their stock.There is no seasonal pattern here to observe as major plot is of constant level.Some Major peaks/drops indicate any positive/negative news on facebook or any kind of events etc.
+
+Through this project,I have got better understanding of visualization and how to identify patterns in plots for better presentation of results.
+<P>
+</FONT>
+
+
+
+<FONT SIZE = 4 COLOR = "Black">
+<P>
+<B>References I referred:
+Babitz, K. (2023, February 22). How to make a histogram in base R: 6 steps with examples. DataCamp. https://www.datacamp.com/tutorial/make-histogram-basic-r 
+
+Davies, T. M. (2016a). The book of r: A first course in programming and statistics. No Starch Press.
+
+Rotating and spacing axis labels in GGPLOT2. Stack Overflow. https://stackoverflow.com/questions/1330989/rotating-and-spacing-axis-labels-in-ggplot2 
+
+Canvas Course Material
+</B>
+<P>
+</FONT>

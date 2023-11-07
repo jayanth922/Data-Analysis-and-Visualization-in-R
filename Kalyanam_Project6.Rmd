@@ -1,0 +1,451 @@
+---
+title: "Kalyanam_Project6"
+author: "Venkat Jayanth Chowdhury Kalyanam"
+date: "2023-11-01"
+output: html_document
+---
+
+<CENTER>
+<FONT SIZE = 5, color = "Black">
+<P>
+<B>ALY 6000 Introduction to Analytics</B>
+<BR>
+</FONT>
+<FONT SIZE = 5, color = "Black">
+<B>Venkat Jayanth Chowdhury Kalyanam</B>
+</FONT>
+</CENTER>
+
+
+
+<FONT SIZE = 2 COLOR = "Black">
+<P>
+<B>Introduction :</B>
+In this project,we will be working on probability distributions using dnorm,pnorm,qnorm and rnorm functions.
+</P>
+</FONT>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r setup2, include = FALSE, message = FALSE, warning = FALSE, echo = TRUE}
+cat("\014") # clears console 
+rm(list = ls()) # clears global environment 
+try(dev.off(dev.list()["RStudioGD"]), silent = TRUE) # clears plots 
+try(p_unload(p_loaded(), character.only = TRUE), silent = TRUE) # clears packages 
+options(scipen = 100) # disables scientific notion for entire R session
+
+
+library(pacman)
+library(testthat)
+library(dplyr)
+library(ggplot2)
+library(palmerpenguins)
+```
+
+
+
+<P> 
+<B> Question 1: </B>
+</P>
+```{r Q1, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+p = 0.65
+n = 7
+prob1_result = dbinom(5, n, p)
+
+test_that("Testing Problem 1", {
+  expect_equal(prob1_result, .2984848, tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 2: </B>
+</P>
+```{r Q2, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob2_result <- tibble(wins = c(0, 1, 2, 3, 4, 5, 6, 7),probability = c(dbinom(0, 7, 0.65), dbinom(1, 7, 0.65), dbinom(2, 7, 0.65), dbinom(3, 7, 0.65), dbinom(4, 7, 0.65), dbinom(5, 7, 0.65), dbinom(6, 7, 0.65), dbinom(7, 7, 0.65))
+)
+
+test_that("Testing Problem 2", {
+  expect_equal(prob2_result$probability[1], .000643, tolerance = 1e-6)
+  expect_equal(prob2_result$probability[4], .144, tolerance = 1e-3)
+  expect_equal(prob2_result$probability[7], .185 , tolerance = 1e-3)
+  
+  })
+```
+
+
+<P> 
+<B> Question 3: </B>
+</P>
+```{r Q3, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+p = 0.65
+n = 7
+prob3_result = pbinom(4, n, p)
+
+test_that("Testing Problem 3", {
+  expect_equal(prob3_result,.4677167 , tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 4: </B>
+</P>
+```{r Q4, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob4_result = dbinom(3, n, p) + dbinom(4, n, p) + dbinom(5, n, p)
+
+test_that("Testing Problem 4", {
+  expect_equal(prob4_result, .7105939, tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 5: </B>
+</P>
+```{r Q5, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob5_result = 1 - pbinom(4, n, p)
+
+test_that("Testing Problem 5", {
+  expect_equal(prob5_result, .5322833, tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 6: </B>
+</P>
+```{r Q6, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob6_result = n * p
+
+test_that("Testing Problem 6", {
+  expect_equal(prob6_result,4.55 , tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 7: </B>
+</P>
+```{r Q7, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob7_result = n * p * (1 - p)
+
+test_that("Testing Problem 7", {
+  expect_equal(prob7_result, 1.5925, tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 8: </B>
+</P>
+```{r Q8, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+set.seed(10)
+wins <- rbinom(1000, n, p)
+head(wins)
+```
+
+
+<P> 
+<B> Question 9: </B>
+</P>
+```{r Q9, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob9_result <- mean(wins)
+
+test_that("Testing Problem 9", {
+  expect_equal(prob9_result, 4.521, tolerance = 5e-1)
+})
+```
+
+
+<P> 
+<B> Question 10: </B>
+</P>
+```{r Q10, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob10_result <- var(wins)
+
+test_that("Testing Problem 10", {
+  expect_equal(prob10_result, 1.689248, tolerance = 1e-1)
+})
+```
+
+
+<P> 
+From here onwards,all are "calls in a call center" problems
+<B> Question 11: </B>
+</P>
+```{r Q11, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob11_result <- dpois(6, lambda = 7)
+
+test_that("Testing Problem 11", {
+  expect_equal(prob11_result, .1490028, tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 12: </B>
+</P>
+```{r Q12, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob12_result <- 0
+for (i in 0:40) {
+  prob12_result <- prob12_result + dpois(i, lambda = 8 * 7)
+}
+
+test_that("Testing Problem 12", {
+  expect_equal(prob12_result, .01552688, tolerance = 1e-7)
+})
+```
+
+
+
+<P> 
+<B> Question 13: </B>
+</P>
+```{r Q13, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob13_result <-  1-ppois(274,lambda=280)
+
+test_that("Testing Problem 13", {
+  expect_equal(prob13_result, .6254307 , tolerance = 1e-7)
+})
+```
+
+
+
+<P> 
+<B> Question 14: </B>
+</P>
+```{r Q14, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob14_result <- 1-ppois(274,lambda=224)
+
+test_that("Testing Problem 14", {
+  expect_equal(prob14_result, 0.0005401031 , tolerance = 1e-5)
+})
+```
+
+
+
+<P> 
+<B> Question 15: </B>
+</P>
+```{r Q15, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+percentile_90 <- qpois(0.9,lambda=56)
+
+prob15_result <- percentile_90
+
+test_that("Testing Problem 15", {
+  expect_equal(prob15_result, 66, tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 16: </B>
+</P>
+```{r Q16, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+set.seed(15)
+calls <- rpois(1000, lambda = 56)
+head(calls)
+```
+
+
+<P> 
+<B> Question 17: </B>
+</P>
+```{r Q17, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob17_result <- mean(calls)
+
+test_that("Testing Problem 17", {
+  expect_equal(prob17_result,56.205 , tolerance = 2)
+})
+```
+
+
+<P> 
+<B> Question 18: </B>
+</P>
+```{r Q18, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob18_result <- var(calls)
+
+test_that("Testing Problem 18", {
+  expect_equal(prob18_result,58.08306 , tolerance = 2)
+})
+```
+
+
+<P> 
+From here onwards,all are lightbulb problems
+<B> Question 19: </B>
+</P>
+```{r Q19, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+mean <- 2000
+sd <- 100
+prob19_result <- (pnorm(2200, mean, sd) - pnorm(1800, mean, sd))
+
+test_that("Testing Problem 19", {
+  expect_equal(prob19_result, .9544997, tolerance = 1e-7)
+})
+```
+
+
+<P> 
+<B> Question 20: </B>
+</P>
+```{r Q20, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob20_result <- round(sum(rnorm(10000, mean, sd) > 2500) / sum(rnorm(10000, mean, sd)) * 100, 2)
+
+test_that("Testing Problem 20", {
+  expect_equal(prob20_result,2.866516e-07 , tolerance = 1e-5)
+})
+```
+
+
+<P> 
+<B> Question 21: </B>
+</P>
+```{r Q21, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob21_result <- round(qnorm(0.1, mean, sd), 0)
+
+test_that("Testing Problem 21", {
+  expect_equal(prob21_result, 1872)
+})
+```
+
+
+<P> 
+<B> Question 22: </B>
+</P>
+```{r Q22, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+set.seed(25)
+light_bulb_life_spans <- rnorm(10000, 2000, 100)
+head(light_bulb_life_spans)
+```
+
+
+<P> 
+<B> Question 23: </B>
+</P>
+```{r Q23, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob23_result <- mean(light_bulb_life_spans)
+
+test_that("Testing Problem 23", {
+  expect_equal(prob23_result, 1999.71, tolerance = 1e-2)
+})
+```
+
+
+<P> 
+<B> Question 24: </B>
+</P>
+```{r Q24, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob24_result <- sd(light_bulb_life_spans)
+
+test_that("Testing Problem 24", {
+  expect_equal(prob24_result,100.0536 , tolerance = 5e-1)
+})
+```
+
+
+<P> 
+<B> Question 25: </B>
+</P>
+```{r Q25, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+set.seed(1)
+sample_means <- numeric(1000)
+for (i in 1:1000) {
+  sample <- sample(light_bulb_life_spans, 100, replace = TRUE)
+  sample_mean <- mean(sample)
+  sample_means[i] <- sample_mean
+}
+head(sample_means)
+```
+
+
+<P> 
+<B> Question 26: </B>
+</P>
+```{r Q26, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+hist(sample_means, main = "Histogram of Sample Means", xlab = "Sample Mean (hours)", ylab = "Frequency")
+```
+
+
+<P> 
+<B> Question 27: </B>
+</P>
+```{r Q27, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+prob27_result<-mean(sample_means)
+
+test_that("Testing Problem 27", {
+  expect_equal(prob27_result, 1999.644, tolerance = 1e-3)
+})
+```
+
+
+<P> 
+From here,all are penguin problems
+<B> Question 28: </B>
+</P>
+```{r Q28, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+adelie_penguins <- penguins %>% filter(species == "Adelie")
+
+hist(adelie_penguins$flipper_length_mm)
+
+#The resulting histogram shows that the distribution of flipper length for Adélie penguins is approximately normal. This is supported by the following evidence:
+
+#The histogram is symmetrical, with a peak in the middle.
+#The distribution is unimodal, meaning that there is only one peak.
+#The distribution is mesokurtic, meaning that the kurtosis of the distribution is close to the normal distribution.
+```
+
+
+
+<P> 
+<B> Question 29: </B>
+</P>
+```{r Q29, include = TRUE, message = FALSE, warning = FALSE, echo = TRUE}
+gentoo_penguins <- penguins %>% filter(species == "Gentoo")
+
+ggplot(data = gentoo_penguins, aes(x = flipper_length_mm, y = bill_depth_mm))+geom_point()
+
+#The resulting scatter plot shows that there is a positive correlation between flipper length and beak depth in gentoo penguins. This means that as flipper length increases, beak depth also tends to increase.
+
+#Gentoo penguins use their flippers for swimming and hunting. A longer flipper length allows a penguin to swim faster and more efficiently. It also allows a penguin to reach deeper into the water to catch prey. A deeper beak depth is also beneficial for catching prey, as it allows a penguin to grip and tear food more effectively.
+```
+
+
+<P> 
+<B> Question 30(Executive Summary): </B>
+
+The above 2 questions explore the distribution of flipper length in Adelie penguins and the relationship between flipper length and beak depth in gentoo penguins.
+
+The length of Adelie penguin flippers is normally distributed, meaning that most penguins have flippers of medium length, and fewer penguins have very short or very long flippers. This is supported by the shape of the histogram of flipper lengths, which is symmetrical and has a single peak.
+
+Gentoo penguins with longer flippers also have deeper beaks. This is because both flipper length and beak depth are helpful for swimming and catching food.
+
+Overall, the results of this report suggest that flipper length is an important morphological feature for penguins. A longer flipper length allows penguins to swim faster and more efficiently, and to reach deeper into the water to catch prey.
+</P>
+
+
+<P>
+<FONT SIZE = 2, COLOR="Black">
+<B>Conclusion: </B>
+</FONT>
+<P>
+To conclude from this project,I have learnt probability distributions using functions like dnorm,pnorm,qnorm and rnorm.Also,I have plotted a histogram of sample mean(in hours) vs frequency.Also applied measures of central tendency and dispersion,ie, mean and variance.
+</P>
+
+
+
+<P>
+<FONT SIZE = 2, COLOR="black">
+<B>References i referred: </B>
+</FONT>
+<P>
+Davies, T. M. (2016a). The book of r: A first course in programming and statistics. No Starch Press.
+
+GeeksforGeeks. (2022, April 21). A guide to dnorm, pnorm, rnorm, and qnorm in R. GeeksforGeeks. https://www.geeksforgeeks.org/a-guide-to-dnorm-pnorm-rnorm-and-qnorm-in-r/#
+</P>
